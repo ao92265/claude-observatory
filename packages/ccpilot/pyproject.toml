@@ -1,0 +1,18 @@
+[project]
+name = "observatory-ccpilot"
+version = "0.1.0"
+description = "Closed-loop self-improvement for Claude Code"
+requires-python = ">=3.11"
+dependencies = [
+  "observatory-core",
+]
+
+[project.scripts]
+ccpilot = "ccpilot.cli:main"
+
+[build-system]
+requires = ["setuptools>=68"]
+build-backend = "setuptools.build_meta"
+
+[tool.setuptools.packages.find]
+where = ["src"]
