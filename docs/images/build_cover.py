@@ -128,9 +128,9 @@ def panel(
         draw.text((x + 18, y + pad_top + i * line_h), txt, fill=col, font=font(14))
 
 
-# --- Three terminal panels (left side, vertically spaced, no overlap) ---
+# --- Three terminal panels (left side, vertically spaced, no overlap with pills) ---
 panel(
-    80, 380, 380, 170, "observatory cost",
+    80, 360, 380, 160, "observatory cost",
     [
         ("$ observatory cost --days 7", BLUE),
         ("263 sessions  $8,197 spent", FG),
@@ -139,7 +139,7 @@ panel(
     ],
 )
 panel(
-    80, 570, 380, 170, "healthcheck suggest",
+    80, 540, 380, 170, "healthcheck suggest",
     [
         ("[model-downgrade]  conf 60%", BLUE),
         ("opus-4-7 -> sonnet-4-6", FG),
@@ -150,23 +150,21 @@ panel(
     line_h=22,
 )
 
-# Cache chart panel (bottom-left, distinct from terminal panels)
-cx, cy, cw, ch = 80, 760, 380, 110
+# Compact cache chart panel — bottom must end well before pills row
+cx, cy, cw, ch = 80, 720, 380, 70
 draw.rounded_rectangle([cx, cy, cx + cw, cy + ch], radius=10, fill=PANEL, outline=BORDER, width=2)
-draw.text((cx + 16, cy + 14), "cache hit rate · 30d", fill=DIM, font=font(13))
-# bars
-bar_top, bar_base = cy + 40, cy + 92
-bar_w, gap = 22, 14
-heights = [28, 36, 44, 48, 46, 50, 52]
+draw.text((cx + 16, cy + 10), "cache hit rate · 30d", fill=DIM, font=font(13))
+bar_base = cy + 58
+bar_w, gap = 16, 10
+heights = [16, 22, 26, 30, 28, 32, 34]
 start_x = cx + 24
 for i, h in enumerate(heights):
     x0 = start_x + i * (bar_w + gap)
     color = BLUE if i < 3 else GREEN
     draw.rounded_rectangle([x0, bar_base - h, x0 + bar_w, bar_base], radius=3, fill=color)
-# 94.2% label — placed RIGHT of bars, not on top
 label = "94.2%"
-lf = font(20)
-draw.text((cx + cw - text_width(draw, label, lf) - 18, cy + 50), label, fill=GREEN, font=lf)
+lf = font(16)
+draw.text((cx + cw - text_width(draw, label, lf) - 18, cy + 32), label, fill=GREEN, font=lf)
 
 # --- Title ---
 kicker = "LOCAL-FIRST OBSERVABILITY FOR CLAUDE CODE"
@@ -193,19 +191,20 @@ def pill(cx_: int, y: int, label: str, color: tuple[int, int, int]) -> int:
     return w
 
 
-# Center the two pills horizontally
+# Pills in bottom-right zone (clear of left panels and footer)
 pf = font(17)
 w1 = text_width(draw, "HealthDoctor  — live timeline", pf) + 40
 w2 = text_width(draw, "HealthCheck  — auto-optimizer", pf) + 40
 total = w1 + 24 + w2
-x1 = (W - total) // 2
-pill(x1, 820, "HealthDoctor  — live timeline", GREEN)
-pill(x1 + w1 + 24, 820, "HealthCheck  — auto-optimizer", ORANGE)
+zone_left, zone_right = 500, W - 30
+x1 = zone_left + ((zone_right - zone_left) - total) // 2
+pill(x1, 810, "HealthDoctor  — live timeline", GREEN)
+pill(x1 + w1 + 24, 810, "HealthCheck  — auto-optimizer", ORANGE)
 
-# Footer (lighter, no overlap with right edge)
+# Footer at bottom-right under pills row (pills end y=850, footer at y=872)
 foot = "github.com/ao92265/claude-observatory  ·  v0.1.0"
 ff = font(13)
-draw.text((W - text_width(draw, foot, ff) - 30, H - 28), foot, fill=DIM, font=ff)
+draw.text((W - text_width(draw, foot, ff) - 30, H - 24), foot, fill=DIM, font=ff)
 
 img.save(OUT, "PNG", optimize=True)
 print(f"wrote {OUT} ({OUT.stat().st_size:,} bytes)")
