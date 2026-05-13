@@ -1,27 +1,27 @@
-# I spent $8k on Claude last month and couldn't tell you where it went
+# Built a tool to see what Claude Code would cost without the Max plan
 
-Right. So the Claude bill came in for last month and it was $8,197. Which is a lot. The annoying part is I genuinely could not tell you what most of it was. Like, you can see the total in the dashboard, fine, but there's no per-session breakdown. No "this skill cost you X". You just get a number and a vibe.
+I'm on the Claude Max subscription, so I pay a flat fee and don't see per-session costs. But Max isn't infinite, and once you're running sub-agents, hooks, MCP servers and the rest, it's not obvious where your usage is going either. So I wrote a small Python tool that reads the JSONL files Claude Code already writes to `~/.claude/projects/` and shows you the breakdown.
 
-I had a free Saturday so I went and pulled all the JSONL files out of `~/.claude/projects/` (those exist, by the way — Claude Code has been writing them the whole time, nobody really talks about it) and wrote a thing that reads them.
+Two CLIs.
 
-Two parts.
+`healthdoctor` taps your live session: every hook, every tool call, every MCP request shows up in a terminal pane or a small web page. Click a row, you see the payload and the duration. Mostly you don't look at it. When something's stuck, you do.
 
-One sits over your live sessions and prints what's happening. Every hook firing, every tool call, every MCP server it pokes. I called it `healthdoctor` because it sounded better than "live event tap". You can either watch it in your terminal or open a tiny web page. Click a row, you get the payload and the exit code and how long it took. Most of the time you don't need it. The rest of the time it saves you an hour.
-
-The other one is `healthcheck` and this is the bit that paid for the Saturday. It reads the JSONL history and just tells you where you're being dumb. Mine:
+`healthcheck` reads the historic logs and reports waste. Five rules so far:
 
 ```
-unused-tool          MCP server you've called twice in a month.
-                     Still ~3k tokens of schema cost per turn.
-opus-for-trivial     Opus session under $2. Sonnet would've done it.
-low-cache-hit        You edited CLAUDE.md mid-session and torched the cache.
-weak-claude-md       Your CLAUDE.md hedges. Model ignores it.
-tool-concentration   73% of your calls are Bash. That's a skill, not a habit.
+unused-tool          MCP server you've called twice in 30 days.
+                     Still costs ~3k tokens of schema per turn.
+opus-for-trivial     Opus session under $2 of usage. Sonnet would do.
+low-cache-hit        CLAUDE.md edited mid-session, cache invalidated.
+weak-claude-md       Hedging language in CLAUDE.md. Model ignores it.
+tool-concentration   73% of tool calls are Bash. Worth turning into a skill.
 ```
 
-I had 10 sessions in the last 30 days where I'd reached for Opus and Sonnet would have done it. That's about $443/mo. Just out the window. I was that guy.
+Each suggestion has a confidence score and an estimated dollar figure (priced at Anthropic's public API rates, since Max doesn't expose per-call cost). On my last 30 days it flagged 10 sessions where I'd reached for Opus when Sonnet would have done the job. At API rates that's about $443/month — money I'd be paying if I weren't on Max, which is also a fair proxy for how hard those sessions were leaning on the cap.
 
-It scores each suggestion, gives you a number, and if you want it'll A/B the change in a git worktree and open a PR with the evidence pasted in so you don't have to take its word.
+It can also run an A/B of a proposed change in a git worktree and open a PR with the evidence in the body, if you want to verify before adopting.
+
+Quickstart:
 
 ```
 git clone https://github.com/ao92265/claude-observatory
@@ -34,7 +34,7 @@ observatory cost --days 7
 healthcheck suggest --days 30 --claude-md ~/.claude/CLAUDE.md
 ```
 
-Apache 2.0. Runs locally, doesn't phone home, I wouldn't put it on a production box yet. If you try it and it breaks, tell me. If you try it and it tells you something embarrassing, you don't have to.
+Apache 2.0. Local-only, no network calls, reads files Claude Code already writes. v0.1, the recommender's confidence scores are roughly vibes right now and the TUI doesn't redraw cleanly when you resize the terminal. Issues and feedback welcome on the repo. Happy to do a 10-minute demo on Teams.
 
 Alex
 
