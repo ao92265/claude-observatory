@@ -1,0 +1,14 @@
+__pycache__/
+*.pyc
+*.egg-info/
+.venv/
+.uv/
+dist/
+build/
+*.db
+*.db-wal
+*.db-shm
+.DS_Store
+.coverage
+htmlcov/
+.omc/
