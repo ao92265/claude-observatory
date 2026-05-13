@@ -1,0 +1,19 @@
+[project]
+name = "observatory-hookscope"
+version = "0.1.0"
+description = "Live hook + MCP + tool timeline for Claude Code"
+requires-python = ">=3.11"
+dependencies = [
+  "observatory-core",
+  "textual>=0.60",
+]
+
+[project.scripts]
+hookscope = "hookscope.cli:main"
+
+[build-system]
+requires = ["setuptools>=68"]
+build-backend = "setuptools.build_meta"
+
+[tool.setuptools.packages.find]
+where = ["src"]
