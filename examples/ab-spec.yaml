@@ -1,5 +1,5 @@
-# Example CCPilot A/B task spec.
-# Run: ccpilot ab --spec examples/ab-spec.yaml --repo /path/to/repo --apply
+# Example HealthCheck A/B task spec.
+# Run: healthcheck ab --spec examples/ab-spec.yaml --repo /path/to/repo --apply
 name: refactor-error-handler
 prompt: |
   Refactor src/errors.py to use Result<T,E> pattern. Run tests after.

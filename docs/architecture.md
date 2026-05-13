@@ -6,7 +6,7 @@
 ┌────────────────────────────────────────────────────────────────┐
 │  Sources                                                       │
 │  ─ ~/.claude/projects/<project>/<session>.jsonl  (replay)      │
-│  ─ hookscope-shim.sh → /tmp/claude-observatory.sock  (live)    │
+│  ─ healthdoctor-shim.sh → /tmp/claude-observatory.sock  (live)    │
 └────────────────────────────────────────────────────────────────┘
                               │
                               ▼
@@ -24,7 +24,7 @@
             ┌─────────────────┼──────────────────┐
             ▼                 ▼                  ▼
 ┌─────────────────┐ ┌──────────────────┐ ┌────────────────────┐
-│ hookscope       │ │ ccpilot          │ │ observatory_web    │
+│ healthdoctor       │ │ healthcheck          │ │ observatory_web    │
 │ ─ daemon (sock) │ │ ─ analyze        │ │ ─ FastAPI app      │
 │ ─ TUI (Textual) │ │ ─ rules (5)      │ │ ─ HTMX templates   │
 │ ─ install/CLI   │ │ ─ ab harness     │ │ ─ SSE stream       │

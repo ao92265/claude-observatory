@@ -14,7 +14,7 @@ from observatory_core.jsonl import (
 )
 from observatory_core.pricing import cost_usd
 
-from ccpilot.rules import Analysis
+from healthcheck.rules import Analysis
 
 
 def _parse_ts(t: object) -> datetime | None:

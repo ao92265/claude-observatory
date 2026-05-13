@@ -3,7 +3,7 @@
 External-dependency notes (read before --apply):
 - Requires `claude` CLI in PATH (Claude Code installation)
 - Requires `ANTHROPIC_API_KEY` (or vended credentials) — real Claude calls cost money
-- Worktrees created under /tmp/ccpilot-ab-<id>; auto-cleaned on success
+- Worktrees created under /tmp/healthcheck-ab-<id>; auto-cleaned on success
 
 Architecture:
 - TaskSpec is loaded from YAML
@@ -121,7 +121,7 @@ def _create_worktree(repo: Path, branch_suffix: str) -> Path:
     """Create disposable git worktree for variant."""
     if not (repo / ".git").exists():
         # No git — just copy
-        dst = Path(tempfile.mkdtemp(prefix="ccpilot-ab-"))
+        dst = Path(tempfile.mkdtemp(prefix="healthcheck-ab-"))
         for item in repo.iterdir():
             if item.name in {".git", "node_modules", ".venv", "__pycache__"}:
                 continue
@@ -130,9 +130,9 @@ def _create_worktree(repo: Path, branch_suffix: str) -> Path:
             else:
                 shutil.copy2(item, dst)
         return dst
-    dst = Path(tempfile.mkdtemp(prefix="ccpilot-ab-"))
+    dst = Path(tempfile.mkdtemp(prefix="healthcheck-ab-"))
     shutil.rmtree(dst)
-    branch = f"ccpilot/ab-{branch_suffix}-{uuid.uuid4().hex[:6]}"
+    branch = f"healthcheck/ab-{branch_suffix}-{uuid.uuid4().hex[:6]}"
     subprocess.run(
         ["git", "worktree", "add", "-b", branch, str(dst)],
         cwd=str(repo),
@@ -158,7 +158,7 @@ def _cleanup_worktree(repo: Path, path: Path) -> None:
 def _apply_diff(worktree: Path, diff_text: str) -> bool:
     if not diff_text.strip():
         return True
-    diff_file = worktree / ".ccpilot.diff"
+    diff_file = worktree / ".healthcheck.diff"
     diff_file.write_text(diff_text)
     proc = subprocess.run(
         ["git", "apply", "--allow-empty", str(diff_file)],
@@ -224,13 +224,13 @@ def run_ab(spec_path: Path, repo: Path, *, apply: bool = False) -> int:
     if not apply:
         print("\n[DRY RUN] Skipping live Claude calls. Pass --apply to execute.")
         print("This will:")
-        print(f"  1. Create 2 git worktrees under {tempfile.gettempdir()}/ccpilot-ab-*")
+        print(f"  1. Create 2 git worktrees under {tempfile.gettempdir()}/healthcheck-ab-*")
         print(f"  2. Run `claude --bare -p ...` in each (timeout {spec.timeout_sec}s)")
         print(f"  3. Score outputs against: {spec.success_phrases}")
         print("  4. Declare winner + cleanup")
         return 0
     control = run_variant(spec, repo, label="control")
-    treatment_diff = os.environ.get("CCPILOT_DIFF", "")
+    treatment_diff = os.environ.get("HEALTHCHECK_DIFF", "")
     treatment = run_variant(spec, repo, diff=treatment_diff, label="treatment")
     winner, reason = declare_winner(control, treatment)
     print(json.dumps(

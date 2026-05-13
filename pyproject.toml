@@ -8,8 +8,8 @@ license = { text = "Apache-2.0" }
 authors = [{ name = "ao92265" }]
 dependencies = [
   "observatory-core",
-  "observatory-hookscope",
-  "observatory-ccpilot",
+  "observatory-healthdoctor",
+  "observatory-healthcheck",
   "observatory-web",
 ]
 
@@ -31,8 +31,8 @@ members = ["packages/*"]
 
 [tool.uv.sources]
 observatory-core = { workspace = true }
-observatory-hookscope = { workspace = true }
-observatory-ccpilot = { workspace = true }
+observatory-healthdoctor = { workspace = true }
+observatory-healthcheck = { workspace = true }
 observatory-web = { workspace = true }
 
 [tool.pytest.ini_options]

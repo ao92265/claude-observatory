@@ -8,7 +8,7 @@ from pathlib import Path
 
 import pytest
 
-from hookscope.daemon import Daemon
+from healthdoctor.daemon import Daemon
 
 
 @pytest.mark.asyncio

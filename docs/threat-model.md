@@ -5,7 +5,7 @@
 1. User's Claude Code session transcripts (may contain proprietary code, secrets, internal paths).
 2. User's `~/.claude/settings.json` (controls hook execution — high blast radius).
 3. User's `ANTHROPIC_API_KEY` and other vended credentials.
-4. The user's repos (CCPilot can modify CLAUDE.md and open PRs).
+4. The user's repos (HealthCheck can modify CLAUDE.md and open PRs).
 
 ## Trust boundaries
 
@@ -16,19 +16,19 @@
 
 ### T1 — Settings.json poisoning
 A malicious actor with write access to `~/.claude/settings.json` could replace the shim with a credential-stealing command.
-**Mitigation:** `hookscope install` writes a timestamped backup; `hookscope uninstall` removes only entries it added (marked with `__observatory__`); the shim path is logged on install.
+**Mitigation:** `healthdoctor install` writes a timestamped backup; `healthdoctor uninstall` removes only entries it added (marked with `__observatory__`); the shim path is logged on install.
 
 ### T2 — Shim leaks secrets
 The shim captures stdin/stdout of hook commands.
 **Mitigation:** Stdin capture is bounded (1MB). Stdout is forwarded to parent first, captured separately. Shim never reads environment variables or files outside its own stdin. A future redaction pipeline will scrub common secret patterns before write.
 
 ### T3 — Adversarial A/B diff
-`ccpilot ab --apply` applies a treatment diff in a worktree and runs `claude` against it.
-**Mitigation:** Worktrees are created under `/tmp/ccpilot-ab-*` and cleaned up after each run. The user must explicitly pass `--apply`; diffs are sourced from `CCPILOT_DIFF` env var or stdin (never auto-fetched from the network). The treatment runs Claude Code, which itself sandboxes file access.
+`healthcheck ab --apply` applies a treatment diff in a worktree and runs `claude` against it.
+**Mitigation:** Worktrees are created under `/tmp/healthcheck-ab-*` and cleaned up after each run. The user must explicitly pass `--apply`; diffs are sourced from `HEALTHCHECK_DIFF` env var or stdin (never auto-fetched from the network). The treatment runs Claude Code, which itself sandboxes file access.
 
 ### T4 — Auto-PR opens unwanted change
-`ccpilot pr --apply` pushes a branch and opens a PR.
-**Mitigation:** Default is `--dry-run` showing the full PR body. Diffs are scoped to known-safe operations (CLAUDE.md hedging rewrite, `ccpilot-notes.md` append). Anything more invasive requires future explicit consent flow.
+`healthcheck pr --apply` pushes a branch and opens a PR.
+**Mitigation:** Default is `--dry-run` showing the full PR body. Diffs are scoped to known-safe operations (CLAUDE.md hedging rewrite, `healthcheck-notes.md` append). Anything more invasive requires future explicit consent flow.
 
 ### T5 — Database corruption
 A crashing daemon could corrupt SQLite.

@@ -1,4 +1,4 @@
-"""ccpilot CLI."""
+"""healthcheck CLI."""
 from __future__ import annotations
 
 import argparse
@@ -6,8 +6,8 @@ import json
 import sys
 from pathlib import Path
 
-from ccpilot.analyze import build_analysis
-from ccpilot.rules import run_all
+from healthcheck.analyze import build_analysis
+from healthcheck.rules import run_all
 
 
 def cmd_suggest(args: argparse.Namespace) -> int:
@@ -20,7 +20,7 @@ def cmd_suggest(args: argparse.Namespace) -> int:
         return 0
 
     print(
-        f"\n=== ccpilot suggest (window={args.days}d, {a.total_events} events, "
+        f"\n=== healthcheck suggest (window={args.days}d, {a.total_events} events, "
         f"${a.total_cost():.2f} spent) ===\n"
     )
     if not suggestions:
@@ -36,13 +36,13 @@ def cmd_suggest(args: argparse.Namespace) -> int:
 
 
 def cmd_ab(args: argparse.Namespace) -> int:
-    from ccpilot.ab import run_ab
+    from healthcheck.ab import run_ab
 
     return run_ab(Path(args.spec), Path(args.repo), apply=args.apply)
 
 
 def cmd_pr(args: argparse.Namespace) -> int:
-    from ccpilot.pr import open_pr_from_suggestion
+    from healthcheck.pr import open_pr_from_suggestion
 
     return open_pr_from_suggestion(
         Path(args.repo), suggestion_id=args.id, dry_run=not args.apply
@@ -50,7 +50,7 @@ def cmd_pr(args: argparse.Namespace) -> int:
 
 
 def main() -> int:
-    p = argparse.ArgumentParser(prog="ccpilot")
+    p = argparse.ArgumentParser(prog="healthcheck")
     sub = p.add_subparsers(dest="cmd", required=True)
 
     ps = sub.add_parser("suggest", help="emit ranked optimization suggestions")

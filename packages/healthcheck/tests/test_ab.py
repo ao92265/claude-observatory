@@ -2,7 +2,7 @@ from __future__ import annotations
 
 from pathlib import Path
 
-from ccpilot.ab import RunResult, TaskSpec, _parse_minimal_yaml, declare_winner
+from healthcheck.ab import RunResult, TaskSpec, _parse_minimal_yaml, declare_winner
 
 
 def test_minimal_yaml_parser() -> None:

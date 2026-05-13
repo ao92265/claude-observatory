@@ -3,10 +3,10 @@
 | Phase | Window | Output | Status |
 |---|---|---|---|
 | 0 — Scaffold | Day 1-2 | Monorepo, fixtures, CI | ✅ |
-| 1 — HookScope MVP | Week 1-2 | TUI live timeline | ✅ |
-| 2 — HookScope web | Week 3 | Replay + web UI | ✅ |
-| 3 — CCPilot suggest | Week 4-6 | Recommendation CLI | ✅ |
-| 4 — CCPilot A/B | Week 7-9 | Worktree harness | ✅ |
+| 1 — HealthDoctor MVP | Week 1-2 | TUI live timeline | ✅ |
+| 2 — HealthDoctor web | Week 3 | Replay + web UI | ✅ |
+| 3 — HealthCheck suggest | Week 4-6 | Recommendation CLI | ✅ |
+| 4 — HealthCheck A/B | Week 7-9 | Worktree harness | ✅ |
 | 5 — Auto-PR | Week 10 | `gh pr create` with evidence | ✅ |
 | 6 — Polish | Week 11-12 | README, docs, landing | ✅ |
 | v1.0 | — | Public launch | pending — needs demo screencasts |

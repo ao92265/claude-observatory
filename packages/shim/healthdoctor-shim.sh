@@ -1,10 +1,10 @@
 #!/usr/bin/env bash
-# hookscope-shim: wraps a Claude Code hook command, captures timing + stdio,
+# healthdoctor-shim: wraps a Claude Code hook command, captures timing + stdio,
 # emits a single NDJSON record on stdout (event-log channel) AND forwards
 # original stdin/stdout/exit to the parent so Claude Code keeps working.
 #
 # Usage in ~/.claude/settings.json:
-#   "PreToolUse": [{"hooks": [{"type": "command", "command": "hookscope-shim.sh PreToolUse <original-cmd>"}]}]
+#   "PreToolUse": [{"hooks": [{"type": "command", "command": "healthdoctor-shim.sh PreToolUse <original-cmd>"}]}]
 #
 # Environment:
 #   OBSERVATORY_SOCKET   Unix socket path (default /tmp/claude-observatory.sock)

@@ -6,7 +6,7 @@ import json
 from pathlib import Path
 from unittest.mock import patch
 
-from hookscope.cli import cmd_install, cmd_uninstall
+from healthdoctor.cli import cmd_install, cmd_uninstall
 
 
 def _run(tmp_home: Path, *, install: bool = False, uninstall: bool = False) -> dict:

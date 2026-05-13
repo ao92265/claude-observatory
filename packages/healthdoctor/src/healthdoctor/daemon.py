@@ -10,7 +10,7 @@ from pathlib import Path
 
 from observatory_core.store import Store
 
-from hookscope import SOCKET_PATH_DEFAULT
+from healthdoctor import SOCKET_PATH_DEFAULT
 
 
 class Daemon:

@@ -1,4 +1,4 @@
-"""hookscope CLI: install shim, run daemon, run TUI."""
+"""healthdoctor CLI: install shim, run daemon, run TUI."""
 from __future__ import annotations
 
 import argparse
@@ -10,8 +10,8 @@ from pathlib import Path
 
 from observatory_core.store import Store
 
-from hookscope import SOCKET_PATH_DEFAULT
-from hookscope.daemon import Daemon
+from healthdoctor import SOCKET_PATH_DEFAULT
+from healthdoctor.daemon import Daemon
 
 DEFAULT_DB = Path.home() / ".claude-observatory" / "observatory.db"
 
@@ -57,10 +57,10 @@ def cmd_install(args: argparse.Namespace) -> int:
     data = json.loads(settings.read_text())
     hooks = data.setdefault("hooks", {})
 
-    shim_path = Path(__file__).resolve().parents[4] / "packages" / "shim" / "hookscope-shim.sh"
+    shim_path = Path(__file__).resolve().parents[4] / "packages" / "shim" / "healthdoctor-shim.sh"
     if not shim_path.exists():
         # fall back to PATH lookup
-        sh = shutil.which("hookscope-shim.sh")
+        sh = shutil.which("healthdoctor-shim.sh")
         if sh:
             shim_path = Path(sh)
 
@@ -87,7 +87,7 @@ def cmd_install(args: argparse.Namespace) -> int:
     settings.write_text(json.dumps(data, indent=2))
     print(f"installed observatory shim in {settings}")
     print(f"  shim path: {shim_path}")
-    print("  uninstall: hookscope uninstall")
+    print("  uninstall: healthdoctor uninstall")
     return 0
 
 
@@ -106,14 +106,14 @@ def cmd_uninstall(args: argparse.Namespace) -> int:
 
 
 def cmd_tui(args: argparse.Namespace) -> int:
-    from hookscope.tui import main_tui
+    from healthdoctor.tui import main_tui
 
     main_tui(Path(args.db))
     return 0
 
 
 def main() -> int:
-    p = argparse.ArgumentParser(prog="hookscope")
+    p = argparse.ArgumentParser(prog="healthdoctor")
     sub = p.add_subparsers(dest="cmd", required=True)
 
     pd = sub.add_parser("daemon", help="run socket listener daemon")

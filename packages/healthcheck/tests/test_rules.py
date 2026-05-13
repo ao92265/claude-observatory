@@ -2,7 +2,7 @@ from __future__ import annotations
 
 from datetime import datetime, timedelta
 
-from ccpilot.rules import Analysis, rule_low_cache_hit, rule_opus_for_simple_work, rule_unused_tools, rule_weak_claude_md, run_all
+from healthcheck.rules import Analysis, rule_low_cache_hit, rule_opus_for_simple_work, rule_unused_tools, rule_weak_claude_md, run_all
 
 
 def _empty(days: int = 30) -> Analysis:

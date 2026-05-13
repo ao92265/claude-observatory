@@ -12,7 +12,7 @@ from datetime import datetime, timedelta
 from pathlib import Path
 from typing import Any
 
-from ccpilot.types import Suggestion
+from healthcheck.types import Suggestion
 
 
 @dataclass

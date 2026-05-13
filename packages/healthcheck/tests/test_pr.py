@@ -2,8 +2,8 @@ from __future__ import annotations
 
 from pathlib import Path
 
-from ccpilot.pr import _suggestion_to_diff
-from ccpilot.types import Suggestion
+from healthcheck.pr import _suggestion_to_diff
+from healthcheck.types import Suggestion
 
 
 def test_claude_md_rewrite(tmp_path: Path) -> None:
@@ -28,12 +28,12 @@ def test_fallback_writes_notes(tmp_path: Path) -> None:
     )
     note = _suggestion_to_diff(s, tmp_path)
     assert note
-    assert (tmp_path / "ccpilot-notes.md").exists()
-    assert "never used" in (tmp_path / "ccpilot-notes.md").read_text()
+    assert (tmp_path / "healthcheck-notes.md").exists()
+    assert "never used" in (tmp_path / "healthcheck-notes.md").read_text()
 
 
 def test_dry_run_no_repo(tmp_path: Path) -> None:
-    from ccpilot.pr import open_pr_from_suggestion
+    from healthcheck.pr import open_pr_from_suggestion
 
     # No .git → should error 2
     rc = open_pr_from_suggestion(tmp_path, suggestion_id="x", dry_run=True)

@@ -30,7 +30,7 @@
 
   <div class="grid">
     <div class="card">
-      <h2>HookScope</h2>
+      <h2>HealthDoctor</h2>
       <p>Live timeline of every hook, tool, and MCP call. Click a row, get the full payload, timing, and exit code. Web UI or terminal.</p>
       <ul>
         <li>Drop-in shim — install in 30s, uninstall just as fast</li>
@@ -39,7 +39,7 @@
       </ul>
     </div>
     <div class="card">
-      <h2>CCPilot</h2>
+      <h2>HealthCheck</h2>
       <p>Reads your usage history. Emits suggestions: archive unused tools, downgrade opus-on-trivial sessions, restructure for cache locality, strengthen hedging language.</p>
       <ul>
         <li>5 built-in rules, expandable</li>
@@ -53,10 +53,10 @@
 <pre><code>git clone https://github.com/ao92265/claude-observatory
 cd claude-observatory
 python3 -m venv .venv &amp;&amp; source .venv/bin/activate
-pip install -e packages/core -e packages/hookscope -e packages/ccpilot -e packages/web
+pip install -e packages/core -e packages/healthdoctor -e packages/healthcheck -e packages/web
 
 observatory ingest
-ccpilot suggest --days 30 --claude-md ~/.claude/CLAUDE.md</code></pre>
+healthcheck suggest --days 30 --claude-md ~/.claude/CLAUDE.md</code></pre>
 
   <h2 style="font-size: 24px; margin-top: 48px;">Why now</h2>
   <p>The Claude Code ecosystem ships features faster than it ships tools to measure them. There is no live debugger for hooks, no per-skill cost attribution, no automated CLAUDE.md optimizer. Observatory fills those gaps with a dependency-light Python toolkit you can audit in an afternoon.</p>

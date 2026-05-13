@@ -7,8 +7,8 @@ import sys
 USAGE = """observatory <command> [args]
 
 Commands:
-  hookscope         Live hook + tool timeline (TUI / web)
-  ccpilot           Recommend + A/B test optimizations
+  healthdoctor         Live hook + tool timeline (TUI / web)
+  healthcheck           Recommend + A/B test optimizations
   ingest            One-shot JSONL ingest into local store
   cost              Per-session cost ledger
   cache             Prompt-cache hit rate
@@ -46,18 +46,18 @@ def main(argv: list[str] | None = None) -> int:
         from observatory_core.lint import main as m
 
         return m() or 0
-    if cmd == "hookscope":
+    if cmd == "healthdoctor":
         try:
-            from hookscope.cli import main as m
+            from healthdoctor.cli import main as m
         except ImportError:
-            print("hookscope package not installed", file=sys.stderr)
+            print("healthdoctor package not installed", file=sys.stderr)
             return 2
         return m() or 0
-    if cmd == "ccpilot":
+    if cmd == "healthcheck":
         try:
-            from ccpilot.cli import main as m
+            from healthcheck.cli import main as m
         except ImportError:
-            print("ccpilot package not installed", file=sys.stderr)
+            print("healthcheck package not installed", file=sys.stderr)
             return 2
         return m() or 0
 
