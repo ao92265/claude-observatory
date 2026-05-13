@@ -150,21 +150,27 @@ panel(
     line_h=22,
 )
 
-# Compact cache chart panel — bottom must end well before pills row
-cx, cy, cw, ch = 80, 720, 380, 70
+# Compact cache chart panel — bars need internal padding to avoid clipping bottom
+cx, cy, cw, ch = 80, 720, 380, 90
 draw.rounded_rectangle([cx, cy, cx + cw, cy + ch], radius=10, fill=PANEL, outline=BORDER, width=2)
 draw.text((cx + 16, cy + 10), "cache hit rate · 30d", fill=DIM, font=font(13))
-bar_base = cy + 58
+# Bars start below header text, end with bottom padding inside panel
+bar_base = cy + ch - 14  # 14px bottom padding inside panel
 bar_w, gap = 16, 10
-heights = [16, 22, 26, 30, 28, 32, 34]
+heights = [14, 20, 26, 32, 30, 36, 38]
 start_x = cx + 24
 for i, h in enumerate(heights):
     x0 = start_x + i * (bar_w + gap)
     color = BLUE if i < 3 else GREEN
     draw.rounded_rectangle([x0, bar_base - h, x0 + bar_w, bar_base], radius=3, fill=color)
 label = "94.2%"
-lf = font(16)
-draw.text((cx + cw - text_width(draw, label, lf) - 18, cy + 32), label, fill=GREEN, font=lf)
+lf = font(18)
+draw.text(
+    (cx + cw - text_width(draw, label, lf) - 22, cy + ch // 2 - 4),
+    label,
+    fill=GREEN,
+    font=lf,
+)
 
 # --- Title ---
 kicker = "LOCAL-FIRST OBSERVABILITY FOR CLAUDE CODE"
@@ -198,8 +204,8 @@ w2 = text_width(draw, "HealthCheck  — auto-optimizer", pf) + 40
 total = w1 + 24 + w2
 zone_left, zone_right = 500, W - 30
 x1 = zone_left + ((zone_right - zone_left) - total) // 2
-pill(x1, 810, "HealthDoctor  — live timeline", GREEN)
-pill(x1 + w1 + 24, 810, "HealthCheck  — auto-optimizer", ORANGE)
+pill(x1, 825, "HealthDoctor  — live timeline", GREEN)
+pill(x1 + w1 + 24, 825, "HealthCheck  — auto-optimizer", ORANGE)
 
 # Footer at bottom-right under pills row (pills end y=850, footer at y=872)
 foot = "github.com/ao92265/claude-observatory  ·  v0.1.0"
