@@ -1,0 +1,10 @@
+<h3>event #{{ event.id }} <small style="opacity:0.6">{{ event.kind }}</small></h3>
+<dl style="font-size:12px">
+  <dt>session</dt><dd>{{ event.session or "-" }}</dd>
+  <dt>hook/tool</dt><dd>{{ event.hook or event.tool or "-" }}</dd>
+  <dt>duration_ms</dt><dd>{{ event.duration_ms or "-" }}</dd>
+  <dt>exit_code</dt><dd>{{ event.exit_code if event.exit_code is not none else "-" }}</dd>
+  <dt>cost_usd</dt><dd>{{ "%.6f"|format(event.cost_usd) if event.cost_usd else "-" }}</dd>
+</dl>
+<h4>payload</h4>
+<pre>{{ payload_pretty }}</pre>

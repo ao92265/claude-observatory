@@ -1,0 +1,10 @@
+{% for e in events %}
+<tr hx-get="/event/{{ e.id }}" hx-target="#detail" hx-swap="innerHTML">
+  <td>{{ e.id }}</td>
+  <td>{{ e.ts_human }}</td>
+  <td class="kind-{{ e.kind }}">{{ e.kind }}</td>
+  <td>{{ e.hook or e.tool or "" }}</td>
+  <td>{{ e.duration_ms or "" }}</td>
+  <td class="{% if e.exit_code and e.exit_code != 0 %}exit-nonzero{% endif %}">{{ e.exit_code if e.exit_code is not none else "" }}</td>
+</tr>
+{% endfor %}

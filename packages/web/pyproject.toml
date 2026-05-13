@@ -1,0 +1,25 @@
+[project]
+name = "observatory-web"
+version = "0.1.0"
+description = "FastAPI + HTMX web UI for Claude Observatory"
+requires-python = ">=3.11"
+dependencies = [
+  "observatory-core",
+  "fastapi>=0.110",
+  "uvicorn[standard]>=0.27",
+  "jinja2>=3",
+  "httpx>=0.27",
+]
+
+[project.scripts]
+observatory-web = "observatory_web.cli:main"
+
+[build-system]
+requires = ["setuptools>=68"]
+build-backend = "setuptools.build_meta"
+
+[tool.setuptools.packages.find]
+where = ["src"]
+
+[tool.setuptools.package-data]
+observatory_web = ["templates/*.html", "static/*"]
