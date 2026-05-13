@@ -1,0 +1,69 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Claude Observatory — local-first observability + self-improvement for Claude Code</title>
+<style>
+  :root { color-scheme: dark; }
+  body { font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", system-ui, sans-serif; margin: 0; background: #0d1117; color: #c9d1d9; line-height: 1.6; }
+  .wrap { max-width: 880px; margin: 0 auto; padding: 64px 24px; }
+  h1 { font-size: 48px; margin: 0 0 12px; font-weight: 800; letter-spacing: -0.02em; }
+  .tag { color: #58a6ff; font-size: 20px; margin-bottom: 32px; }
+  .lede { font-size: 18px; opacity: 0.85; margin-bottom: 48px; }
+  .grid { display: grid; grid-template-columns: 1fr 1fr; gap: 24px; margin-bottom: 48px; }
+  .card { background: #161b22; border: 1px solid #30363d; padding: 24px; border-radius: 8px; }
+  .card h2 { margin-top: 0; font-size: 22px; color: #ffa657; }
+  pre { background: #010409; border: 1px solid #30363d; padding: 16px; border-radius: 6px; overflow-x: auto; font-size: 13px; }
+  code { font-family: ui-monospace, Menlo, monospace; }
+  footer { opacity: 0.6; font-size: 14px; margin-top: 64px; border-top: 1px solid #30363d; padding-top: 24px; }
+  a { color: #58a6ff; }
+  ul { padding-left: 20px; }
+  li { margin-bottom: 6px; }
+</style>
+</head>
+<body>
+<div class="wrap">
+  <h1>Claude Observatory</h1>
+  <div class="tag">Local-first observability + closed-loop self-improvement for Claude Code.</div>
+  <p class="lede">See every hook fire. Diff every context window. Get ranked, evidence-backed recommendations on which skills to archive, which CLAUDE.md rules to strengthen, and which sessions could have run on a cheaper model. No cloud. No telemetry. Just your own data, surfaced.</p>
+
+  <div class="grid">
+    <div class="card">
+      <h2>HookScope</h2>
+      <p>Live timeline of every hook, tool, and MCP call. Click a row, get the full payload, timing, and exit code. Web UI or terminal.</p>
+      <ul>
+        <li>Drop-in shim — install in 30s, uninstall just as fast</li>
+        <li>Textual TUI + FastAPI/HTMX web UI</li>
+        <li>SQLite store, replay any past session</li>
+      </ul>
+    </div>
+    <div class="card">
+      <h2>CCPilot</h2>
+      <p>Reads your usage history. Emits suggestions: archive unused tools, downgrade opus-on-trivial sessions, restructure for cache locality, strengthen hedging language.</p>
+      <ul>
+        <li>5 built-in rules, expandable</li>
+        <li>A/B harness runs both variants in git worktrees</li>
+        <li>Opens PRs with full evidence in body</li>
+      </ul>
+    </div>
+  </div>
+
+  <h2 style="font-size: 24px; margin-top: 48px;">Install</h2>
+<pre><code>git clone https://github.com/ao92265/claude-observatory
+cd claude-observatory
+python3 -m venv .venv &amp;&amp; source .venv/bin/activate
+pip install -e packages/core -e packages/hookscope -e packages/ccpilot -e packages/web
+
+observatory ingest
+ccpilot suggest --days 30 --claude-md ~/.claude/CLAUDE.md</code></pre>
+
+  <h2 style="font-size: 24px; margin-top: 48px;">Why now</h2>
+  <p>The Claude Code ecosystem ships features faster than it ships tools to measure them. There is no live debugger for hooks, no per-skill cost attribution, no automated CLAUDE.md optimizer. Observatory fills those gaps with a dependency-light Python toolkit you can audit in an afternoon.</p>
+
+  <footer>
+    Apache 2.0 · <a href="https://github.com/ao92265/claude-observatory">GitHub</a> · v0.1.0
+  </footer>
+</div>
+</body>
+</html>
