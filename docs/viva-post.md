@@ -1,75 +1,67 @@
-# I built a free tool to watch (and cut) my Claude Code spend — sharing it with the team
+# Watching my Claude Code spend (and a tool I made to do it)
 
-> Open-sourced it this weekend. Found **$443/month** of waste on my own account in the first 5 minutes.
+Got fed up last week. Claude Code's a black box — sub-agents fan out, hooks fire, MCP servers eat tokens, and a week later there's a Stripe bill with no breakdown. So I built something. Sharing it in case any of you are in the same boat.
 
----
+It's called **Claude Observatory**. Two pieces:
 
-Hey all —
+**HealthDoctor** — sits on top of Claude Code and shows every hook, tool call, and MCP request live. Either in your terminal or a little web dashboard. Click an event, see what came in, what came out, how long it took, what it cost. That's it.
 
-So here's the thing that's been bugging me for months: Claude Code is amazing, but it's a black box. You fire off a session, hooks fire, sub-agents spawn, MCP servers chatter, tokens vanish, and at the end of the week you've got a Stripe invoice and zero idea where the money went.
+**HealthCheck** — reads your `~/.claude/projects/` logs and tells you where the waste is. Five things it looks for right now:
 
-Last Friday I'd had enough. Saturday morning I started building. Today I'm sharing the result: **Claude Observatory** — a free, open-source toolkit that finally lets you see what your agent is actually doing, and tells you what to fix.
+```
+unused-tool          MCP server you've called twice in 30 days, eating
+                     ~3k tokens per turn in schema overhead.
 
-## Two tools, one workflow
+opus-for-trivial     Opus session that cost $1.85 doing work sonnet
+                     would've handled for 35c.
 
-🩺 **HealthDoctor** — like Chrome DevTools, but for Claude Code. A tiny shim wraps every hook fire and streams it into a local SQLite store. A terminal UI or a web dashboard shows the live timeline. Click any event for the full payload, duration, exit code, stdin/stdout.
+low-cache-hit        You edit CLAUDE.md mid-session and kill prompt
+                     cache. Stop doing that.
 
-❤️‍🩹 **HealthCheck** — reads your session logs and tells you what to fix. Five rules right now:
+weak-claude-md       Your CLAUDE.md says "you should usually try to..."
+                     and the model ignores 80% of it.
 
-- **unused-tool** → you've got an MCP server bolted on that you've called twice in a month. It's eating ~3k tokens per turn in schema overhead. Disable it.
-- **opus-for-trivial-work** → you ran a $1.85 session on Opus that Sonnet could've done for 35 cents. **In my data: 10 sessions like this in 30 days = $443/mo bleed.**
-- **low-cache-hit** → you're editing CLAUDE.md mid-session and killing prompt cache. Stop doing that.
-- **weak-claude-md** → your CLAUDE.md says "you should usually try to..." and the model is ignoring 80% of it. Use MUST/WILL/NEVER.
-- **tool-concentration** → 73% of your tool calls are `Bash`. That's a workflow begging to be a skill.
+tool-concentration   73% of your tool calls are Bash. That's a
+                     workflow asking to be a skill.
+```
 
-Then it can A/B test the proposed change in a git worktree, and open a PR with the evidence in the body so you don't have to take its word for anything.
+Each suggestion has a confidence score and an estimated dollar savings. It can run an A/B test of the change in a git worktree and open a PR with the evidence in the body, so you're not just trusting it.
 
-## A real example from my own data (today)
+What I found on my own data (30 days):
 
 ```
 $ healthcheck suggest --days 30
 
-1. [model-downgrade] 7b539d94-695…  (confidence 60%)
-   Session used claude-opus-4-7 for $1.95. Low spend = simple work;
-   sonnet would suffice at ~5× cheaper.
-   Est. savings: $46.73/month
+1. model-downgrade  7b539d94…   conf 60%   est $46.73/mo
+2. model-downgrade  6f9ebbc8…   conf 60%   est $45.44/mo
+3. model-downgrade  9588be80…   conf 60%   est $44.72/mo
+... 7 more ...
 
-2. [model-downgrade] 6f9ebbc8-ead…  (confidence 60%)
-   Session used claude-opus-4-7 for $1.89...
-   Est. savings: $45.44/month
-
-... 8 more ...
 TOTAL est savings: $443.10/mo
 ```
 
-That's real money. On one developer. In one month.
+Ten sessions where I'd reached for Opus and Sonnet would've been fine. $443 a month I had no idea I was leaving on the table.
 
-## Privacy
+Local-only. Nothing leaves your machine. Reads files Claude Code already writes. ~1,500 lines of mostly-stdlib Python, all auditable.
 
-Everything runs on your machine. Reads only your local `~/.claude/projects/*.jsonl` (Claude Code already writes them — nothing new collected). No cloud, no analytics, no telemetry, no phone-home. ~1,500 lines of mostly-stdlib Python you can audit in an afternoon.
+Quickstart:
 
-## Try it (5 minutes)
-
-```bash
+```
 git clone https://github.com/ao92265/claude-observatory
 cd claude-observatory
 python3 -m venv .venv && source .venv/bin/activate
 pip install -e packages/core -e packages/healthdoctor -e packages/healthcheck -e packages/web
 
-# Pull report on your last 7 days
 observatory cost --days 7
 healthcheck suggest --days 30 --claude-md ~/.claude/CLAUDE.md
 ```
 
-Run it. Tell me what you find. If you save $20, buy yourself a coffee and call it even.
+Apache 2.0. v0.1 so plenty of rough edges. Issues and PRs welcome.
 
-Apache 2.0 license. Issues and PRs very welcome — calling this v0.1, plenty of rough edges left to file off.
+If anyone wants a 10-minute demo, ping me on Teams.
 
-Happy to demo internally — drop a comment or ping me on Teams.
-
-— Alex
+Alex
 
 ---
 
-**Tags:** Claude Code · Developer Tools · Cost Optimization · Open Source · Productivity
-**Repo:** https://github.com/ao92265/claude-observatory
+Repo: https://github.com/ao92265/claude-observatory
