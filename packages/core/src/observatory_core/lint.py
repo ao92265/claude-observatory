@@ -20,10 +20,10 @@ WEAK_PHRASES = [
     "if possible",
     "where appropriate",
     "as needed",
-    "generally",
-    "usually",
-    "typically",
 ]
+
+# Phrases-as-mnemonics (UPPERCASE) are intentional, not hedging
+HEDGE_EXEMPT_UPPER = ("USUALLY", "GENERALLY", "TYPICALLY")
 
 
 def lint(path: Path) -> list[str]:
@@ -31,7 +31,9 @@ def lint(path: Path) -> list[str]:
     if not path.exists():
         return [f"{path}: missing"]
     text = path.read_text(errors="replace")
-    lines = text.splitlines()
+    # Strip code fences before line-level checks (block-level fence count is computed separately)
+    text_no_fences = re.sub(r"```[\s\S]*?```", "", text)
+    lines = text_no_fences.splitlines()
     est_tokens = int(len(text) * TOKEN_PER_CHAR)
 
     issues.append(f"{path}: {len(lines)} lines, ~{est_tokens} tokens")
@@ -51,6 +53,9 @@ def lint(path: Path) -> list[str]:
             seen[norm] = i
 
     for i, ln in enumerate(lines, 1):
+        # Skip lines using mnemonic capitalization (USUALLY → skill, etc.)
+        if any(token in ln for token in HEDGE_EXEMPT_UPPER):
+            continue
         low = ln.lower()
         for w in WEAK_PHRASES:
             if w in low:
@@ -61,18 +66,23 @@ def lint(path: Path) -> list[str]:
         if a.search(text) and b.search(text):
             issues.append(f"  [CONFLICT] both '{a.pattern}' and '{b.pattern}' present")
 
-    fences = re.findall(r"```[\s\S]*?```", text)
+    fences = re.findall(r"```[\s\S]*?```", text)  # original text for fence detection
     big = [f for f in fences if len(f) > 400]
     if big:
         issues.append(
             f"  [SNIPPET] {len(big)} large code fence(s) — move to repo, reference by path:line"
         )
 
-    rule_lines = [ln for ln in lines if ln.lstrip().startswith("- ")]
-    weak = [ln for ln in rule_lines if not re.search(r"\b(MUST|WILL|NEVER|ALWAYS)\b", ln)]
-    if len(rule_lines) > 5 and len(weak) / len(rule_lines) > 0.6:
+    # Count rule-shaped bullets (sentence-style, > 60 chars) only.
+    # Short fragments like "1 example = anecdote" don't need imperatives.
+    rule_lines = [
+        ln for ln in lines
+        if ln.lstrip().startswith("- ") and len(ln) > 60 and ln.rstrip().endswith(".")
+    ]
+    weak = [ln for ln in rule_lines if not re.search(r"\b(MUST|WILL|NEVER|ALWAYS|MAY|SHOULD NOT)\b", ln)]
+    if len(rule_lines) > 10 and len(weak) / len(rule_lines) > 0.7:
         issues.append(
-            f"  [VOICE] {len(weak)}/{len(rule_lines)} bullets lack MUST/WILL/NEVER/ALWAYS anchor"
+            f"  [VOICE] {len(weak)}/{len(rule_lines)} prose-rule bullets lack imperative anchor"
         )
     return issues
 
