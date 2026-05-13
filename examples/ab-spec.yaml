@@ -1,0 +1,11 @@
+# Example CCPilot A/B task spec.
+# Run: ccpilot ab --spec examples/ab-spec.yaml --repo /path/to/repo --apply
+name: refactor-error-handler
+prompt: |
+  Refactor src/errors.py to use Result<T,E> pattern. Run tests after.
+  Print 'AB_DONE' on success, 'AB_FAILED' otherwise.
+success_phrases:
+  - AB_DONE
+max_turns: 15
+max_cost_usd: 3.0
+timeout_sec: 600
