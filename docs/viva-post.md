@@ -1,27 +1,27 @@
 # I spent $8k on Claude last month and couldn't tell you where it went
 
-Last week I went to look at the Claude bill. Couldn't work out which sessions cost what. Sub-agents fork off everywhere, hooks fire in the background, MCP servers I forgot I installed are still chewing through tokens. The dashboard shows the total. Doesn't show why.
+Went to look at the bill last week. Sub-agents fan out into more sub-agents, hooks fire on every keystroke, half the MCP servers in my config I don't even remember installing. The dashboard shows you one number. It doesn't show you the why.
 
-Lost a Saturday to it. Wrote a small Python thing. Posting it in case anyone else is in the same hole.
+So I lost a Saturday to it. Wrote a small Python thing. Sticking it here in case anyone else is staring at their bill wondering the same thing.
 
 Two CLIs.
 
-The first is `healthdoctor`. It watches a Claude Code session live. Every hook, every tool call, every MCP request lands in a terminal pane or a small web page. Click a row, you see what went in, what came out, how long it took, exit code. Not fancy.
+`healthdoctor` watches a Claude Code session live. Hooks, tool calls, MCP requests all show up in a terminal pane or a small web page. Click a row, you get the payload, duration, exit code. Boring on purpose.
 
-The second is `healthcheck`. It reads the JSONL files Claude Code already writes to `~/.claude/projects/` and tells you where the money's going. Five rules so far:
+`healthcheck` reads the JSONL files Claude Code already writes to `~/.claude/projects/` and tells you where the money's leaking. Five rules so far:
 
 ```
-unused-tool          MCP server invoked twice in 30 days.
-                     Still costs ~3k tokens of schema per turn.
-opus-for-trivial     Opus session under $2. Sonnet would do.
-low-cache-hit        CLAUDE.md edited mid-session, killed cache.
-weak-claude-md       "you should usually try to..." gets ignored.
-tool-concentration   73% of tool calls are Bash. Write a skill.
+unused-tool          MCP server you've called twice in a month.
+                     Still ~3k tokens of schema cost per turn.
+opus-for-trivial     Opus session under $2. Sonnet would've done it.
+low-cache-hit        You edited CLAUDE.md mid-session and torched the cache.
+weak-claude-md       Your CLAUDE.md hedges. Model ignores it.
+tool-concentration   73% of your calls are Bash. That's a skill, not a habit.
 ```
 
-Each suggestion has a confidence score and an estimated dollar saving. It can A/B test the change in a git worktree and open a PR with the evidence pasted in the body so you're not just trusting it.
+Each one has a confidence score and a dollar number. It can A/B the change in a git worktree and open a PR with the evidence in the body so you can argue with it.
 
-My own 30 days: 263 sessions, $8,197 spent, 10 sessions where I'd grabbed Opus and Sonnet would have done fine. About $443/month I didn't know I was burning.
+What I found on myself: 263 sessions, $8,197 spent, 10 of those were on Opus when Sonnet would have been fine. Roughly $443/mo I was just lighting on fire because I'd forgotten to switch models.
 
 ```
 git clone https://github.com/ao92265/claude-observatory
@@ -34,8 +34,8 @@ observatory cost --days 7
 healthcheck suggest --days 30 --claude-md ~/.claude/CLAUDE.md
 ```
 
-Apache 2.0. Reads files Claude Code already writes. Nothing leaves your machine. v0.1, so rough edges aplenty. Issues and PRs welcome. Happy to do a 10-min demo on Teams if anyone wants one.
+Apache 2.0. Local-only, nothing phones home. v0.1 so don't be surprised if something breaks. Happy to demo on Teams if you want a look before you install random Python off the internet.
 
 Alex
 
-Repo: https://github.com/ao92265/claude-observatory
+https://github.com/ao92265/claude-observatory
